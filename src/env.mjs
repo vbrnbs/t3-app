@@ -7,7 +7,7 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: 'mysql://tcer2juhqwcmvh03nua3:pscale_pw_sAgV2VVnZiD6LuRAGacqBzlu0BL3cB0BZfrE4OhItIs@aws.connect.psdb.cloud/t3-app-db?sslaccept=strict',
     NODE_ENV: z.enum(["development", "test", "production"]),
   },
 
