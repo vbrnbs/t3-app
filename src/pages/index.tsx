@@ -6,7 +6,7 @@ import { api } from "~/utils/api";
 export default function Home() {
   const user = useUser();
 
-  const { data } = api.post.getAll.useQuery();
+  const { data } = api.posts.getAll.useQuery();
   return (
     <>
       <Head>
