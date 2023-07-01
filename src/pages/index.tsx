@@ -8,11 +8,24 @@ import Image from "next/image";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+
 import { LoadingPage } from "~/components/Loading";
+import { useState } from "react";
 dayjs.extend(relativeTime);
 
 const CreatePostWizzard = () => {
   const { user } = useUser();
+
+  const [input, setInput] = useState<string>("");
+
+  const ctx = api.useContext();
+
+  const { mutate, isLoading: isPosting } = api.posts.create.useMutation({
+    onSuccess: () => {
+      setInput("");
+      ctx.posts.getAll.invalidate();
+    },
+  });
 
   if (!user) return null;
 
@@ -24,8 +37,16 @@ const CreatePostWizzard = () => {
         alt="Profile Image"
         width={56}
         height={56}
-        />
-      <input placeholder="Type some emojis!" className="bg-transparent grow outline-none" />
+      />
+      <input
+        placeholder="Type some emojis!"
+        className="bg-transparent grow outline-none"
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        disabled={isPosting}
+      />
+      <button onClick={() => mutate({ content: input })}>Post</button>
     </div>
   )
 }
@@ -36,21 +57,21 @@ const PostView = (props: PostWithUser) => {
   const { post, author } = props;
   return (
     <div key={post.id} className="p-4 gap-3 border-b border-slate-200 flex ">
-      <Image 
-      src={author.profileImageUrl} 
-      alt={`@${author.username}'s profile picture`} 
-      className="h-12 w-12 rounded-full"
-      width={56}
-      height={56}
+      <Image
+        src={author.profileImageUrl}
+        alt={`@${author.username}'s profile picture`}
+        className="h-12 w-12 rounded-full"
+        width={56}
+        height={56}
       />
       <div className="flex flex-col">
         <div className="flex gap-1 text-slate-300">
           <span>{`@${author.username}`}</span>
           <span className="font-thin">{` • ${dayjs(post.createdAt).fromNow()} ago`}</span>
         </div>
-        <span>{post.content}</span>
+        <span className="text-2xl">{post.content}</span>
       </div>
-      
+
     </div>
   );
 
@@ -64,16 +85,16 @@ const Feed = () => {
 
   return (
     <div className="flex flex-col">
-            {[...data, ...data]?.map((fullPost) => (
-              <PostView {...fullPost} key={fullPost.post.id} />
-            ))}
-          </div>
+      {data.map((fullPost) => (
+        <PostView {...fullPost} key={fullPost.post.id} />
+      ))}
+    </div>
   )
 
 }
 
 export default function Home() {
-  const {isLoaded: userLoaded, isSignedIn } = useUser();
+  const { isLoaded: userLoaded, isSignedIn } = useUser();
 
   // start fetching asap
   api.posts.getAll.useQuery();
