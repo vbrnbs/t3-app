@@ -12,7 +12,6 @@ import { LoadingPage, LoadingSpinner } from "~/components/Loading";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import toast, { Toaster } from 'react-hot-toast';
-import Link from "next/link";
 
 dayjs.extend(relativeTime);
 
@@ -64,16 +63,16 @@ const CreatePostWizzard = () => {
         disabled={isPosting}
       />
       {input !== "" && !isPosting && (
-        <>
-          <button onClick={() => mutate({ content: input })} >Post</button>
-          <Toaster
-            position="bottom-center"
-          />
-        </>
-      )}
+          <>
+            <button onClick={() => mutate({ content: input })} >Post</button>
+            <Toaster
+              position="bottom-center"
+            />
+          </>
+        )}
       {isPosting && (
         <div className="flex items-center justify-center">
-          <LoadingSpinner size={20} />
+          <LoadingSpinner size={20}/>
         </div>
       )}
     </div>
@@ -95,15 +94,12 @@ const PostView = (props: PostWithUser) => {
       />
       <div className="flex flex-col">
         <div className="flex gap-1 text-slate-300">
-          <Link href={`/@${author.username}`}>
-            <span>{`@${author.username}`}</span>
-          </Link>
-          <Link href={`/post/${post.id}`}>
-            <span className="font-thin">{` • ${dayjs(post.createdAt).fromNow()} ago`}</span>
-          </Link>
+          <span>{`@${author.username}`}</span>
+          <span className="font-thin">{` • ${dayjs(post.createdAt).fromNow()} ago`}</span>
         </div>
         <span className="text-2xl">{post.content}</span>
       </div>
+
     </div>
   );
 
@@ -125,7 +121,7 @@ const Feed = () => {
 
 }
 
-const Home: NextPage = () => {
+export default function Home() {
   const { isLoaded: userLoaded, isSignedIn } = useUser();
 
   // start fetching asap
@@ -154,5 +150,3 @@ const Home: NextPage = () => {
     </>
   );
 }
-
-export default Home;
