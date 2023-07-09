@@ -1,9 +1,10 @@
-import { User } from "@clerk/nextjs/api";
+
 import { clerkClient } from '@clerk/nextjs/server';
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, privateProcedure, publicProcedure } from "~/server/api/trpc";
 
+import { User } from "@clerk/nextjs/api";
 const filterUserForClient = (user: User) => {
   return {
     id: user.id,
@@ -45,7 +46,7 @@ export const postsRouter = createTRPCRouter({
     return posts.map((post) => {
       {
         const author = users.find((user) => user.id === post.authorID);
-        console.log(author);
+        // console.log(author);
 
         if (!author || !author.username) throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
